@@ -1,2 +1,2 @@
 # PELAJAR-NU-INDRAMAYU
-Website berita organisasi 
+Info terbaru Pelajar NU di Indramayu
