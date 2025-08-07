@@ -1,0 +1,31 @@
+// Struktur utama proyek // - admin/ (untuk website admin pribadi) // - public/ (untuk website pembaca umum) // // Kita akan membuat dua halaman utama dengan TailwindCSS dan React.
+
+// ==== FILE: src/App.jsx ==== import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; import AdminDashboard from './admin/AdminDashboard'; import PublicReader from './public/PublicReader';
+
+function App() { return ( <Router> <Routes> <Route path="/admin/" element={<AdminDashboard />} /> <Route path="/" element={<PublicReader />} /> </Routes> </Router> ); }
+
+export default App;
+
+// ==== FILE: src/admin/AdminDashboard.jsx ==== import { useState } from 'react'; import { useNavigate } from 'react-router-dom';
+
+function AdminDashboard() { const [title, setTitle] = useState(''); const [content, setContent] = useState(''); const navigate = useNavigate();
+
+const handlePublish = () => { const articles = JSON.parse(localStorage.getItem('articles')) || []; const newArticle = { title, content, date: new Date().toISOString(), author: 'Penulis: Pelajar NU Indramayu' }; localStorage.setItem('articles', JSON.stringify([newArticle, ...articles])); navigate('/'); };
+
+return ( <div className="min-h-screen bg-green-900 text-white p-6"> <h1 className="text-2xl font-bold mb-4">Admin Redaksi - Pelajar NU Indramayu</h1> <input type="text" placeholder="Judul Berita" className="w-full p-2 mb-4 text-black" value={title} onChange={(e) => setTitle(e.target.value)} /> <textarea placeholder="Isi berita..." className="w-full h-60 p-2 mb-4 text-black" value={content} onChange={(e) => setContent(e.target.value)} ></textarea> <button
+onClick={handlePublish}
+className="bg-white text-green-900 px-4 py-2 rounded"
+> Publikasikan </button> </div> ); }
+
+export default AdminDashboard;
+
+// ==== FILE: src/public/PublicReader.jsx ==== import { useEffect, useState } from 'react';
+
+function PublicReader() { const [articles, setArticles] = useState([]);
+
+useEffect(() => { const stored = localStorage.getItem('articles'); if (stored) { setArticles(JSON.parse(stored)); } }, []);
+
+return ( <div className="min-h-screen bg-white text-black p-6"> <h1 className="text-3xl font-bold text-center mb-6">PELJAR NU INDRAMAYU</h1> <div className="space-y-6"> {articles.map((art, idx) => ( <div key={idx} className="border-b pb-4"> <h2 className="text-xl font-semibold">{art.title}</h2> <p className="text-sm text-gray-500">{new Date(art.date).toLocaleString()}</p> <div className="my-2 whitespace-pre-wrap">{art.content}</div> <p className="text-sm italic">{art.author}</p> </div> ))} </div> </div> ); }
+
+export default PublicReader;
+
